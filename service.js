@@ -2,49 +2,58 @@ const http = require('node:http');
 const qs = require('node:querystring');
 const puppeteer = require('puppeteer');
 
-const hostname = '127.0.0.1';
 const port = 3000;
 const server = http.createServer(async (request, response) =>
 {
   let body = '';
   request.on('data', function (data) {
     body += data;
-    if (body.length > 100000000) {
+    if (body.length > 1e8) {
       request.connection.destroy();
     }
   });
 
   request.on('end', async function () {
-    // POST must be "content-type: application/x-www-form-urlencoded"
-    const post = qs.parse(body);
-    const pdf = await generatePDF(
-      post.html,
-      post.format
-    );
 
-    response.statusCode = 200;
-    response.setHeader('Content-Type', 'application/pdf');
-    response.setHeader('Content-Length', pdf.length);
-    response.end(pdf);
+    try {
+      // POST must be "content-type: application/x-www-form-urlencoded"
+      const post = qs.parse(body);
+      const pdf = await generatePDF(post.html, {
+        format: post.format ?? 'A4',
+        margin: {top: '20mm', bottom: '20mm', left: '10mm', right: '10mm'},
+        landscape: !!post.landscape,
+        displayHeaderFooter: true,
+        headerTemplate: post.headerTemplate ?? '',
+        footerTemplate: post.footerTemplate ?? ''
+      });
 
+      response.statusCode = 200;
+      response.setHeader('Content-Type', 'application/pdf');
+      response.setHeader('Content-Length', pdf.length);
+      response.end(pdf);
+    }
+    catch (error) {
+      response.statusCode = 500;
+      response.end(error.message);
+    }
   });
 });
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
+server.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
 
 /**
  * Generate PDF with puppeteer
  * @param {string} html
- * @param {string} format
+ * @param {object} options
  * @returns {Promise<*>}
  */
-async function generatePDF(html, format) {
-  const browser = await puppeteer.launch({ headless: true,args:  getPuppeteerArgs()});
+async function generatePDF(html, options) {
+  const browser = await puppeteer.launch({headless: true, args: getPuppeteerArgs()});
   const page = await browser.newPage();
   await page.setContent(html, {waitUntil: 'networkidle0'});
-  const pdf = await page.pdf({ format: format });
+  const pdf = await page.pdf(options);
   await browser.close();
   return pdf;
 }
@@ -92,6 +101,7 @@ function getPuppeteerArgs() {
     '--no-zygote',
     '--password-store=basic',
     '--use-gl=swiftshader',
-    '--use-mock-keychain'];
+    '--use-mock-keychain'
+  ];
 }
 

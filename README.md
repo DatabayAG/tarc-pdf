@@ -24,10 +24,10 @@ node service.js
 
 It should show you this message:
 ````
-Server running at http://127.0.0.1:3000/
+Server running on port 3000
 ````
 
-You may put this service behind a reverse proxy to expose it to the net.
+You should put this service behind a reverse proxy to call it with https from outside.
 
 ## Usage
 
