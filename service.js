@@ -1,30 +1,59 @@
 const http = require('node:http');
+const qs = require('node:querystring');
 const puppeteer = require('puppeteer');
-const url = require('url');
 
 const hostname = '127.0.0.1';
 const port = 3000;
 const server = http.createServer(async (request, response) =>
 {
-  const queryData = url.parse(request.url, true).query;
+  let body = '';
+  request.on('data', function (data) {
+    body += data;
+    if (body.length > 100000000) {
+      request.connection.destroy();
+    }
+  });
 
-  const browser = await puppeteer.launch({ headless: true,args:  getPuppeteerArgs()});
-  const page = await browser.newPage();
-  await page.goto(queryData.url, {waitUntil: 'networkidle0'});
-  const pdf = await page.pdf({ format: 'A4' });
-  await browser.close();
+  request.on('end', async function () {
+    // POST must be "content-type: application/x-www-form-urlencoded"
+    const post = qs.parse(body);
+    const pdf = await generatePDF(
+      post.html,
+      post.format
+    );
 
-  response.statusCode = 200;
-  response.setHeader('Content-Type', 'application/pdf');
-  response.setHeader('Content-Length', pdf.length);
-  response.end(pdf);
+    response.statusCode = 200;
+    response.setHeader('Content-Type', 'application/pdf');
+    response.setHeader('Content-Length', pdf.length);
+    response.end(pdf);
 
+  });
 });
 
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
 
+/**
+ * Generate PDF with puppeteer
+ * @param {string} html
+ * @param {string} format
+ * @returns {Promise<*>}
+ */
+async function generatePDF(html, format) {
+  const browser = await puppeteer.launch({ headless: true,args:  getPuppeteerArgs()});
+  const page = await browser.newPage();
+  await page.setContent(html, {waitUntil: 'networkidle0'});
+  const pdf = await page.pdf({ format: format });
+  await browser.close();
+  return pdf;
+}
+
+/**
+ * Get arguments for launching puppeteer
+ * @see https://apitemplate.io/blog/tips-for-generating-pdfs-with-puppeteer/
+ * @returns {string[]}
+ */
 function getPuppeteerArgs() {
   return [
     '--disable-features=IsolateOrigins',
