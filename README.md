@@ -13,7 +13,7 @@ First install puppeteer:
 npm install puppeteer
 ````
 
-Then clone this repository to the directory in which you installed the puppeteer.
+Then clone this repository to the directory in which you installed puppeteer.
 
 ## Start
 
@@ -31,16 +31,16 @@ You should put this service behind a reverse proxy to call it with https from ou
 
 ## Usage
 
-The service is called with a POST requests and returns the generated PDF as inline content. The POST must be delivered as 
+The service is called with a POST request and returns the generated PDF as inline content. The POST must be delivered as 
 `content-type: application/x-www-form-urlencoded`.
 
-| POST Field       | Content                                   |
-|------------------|-------------------------------------------|
-| html             | The HTML content to be rendered           |
-| format           | e.g. 'A4'                                 |
-| landscape        | 0 or 1                                    |
-| headerTemplate   | html code of the template for the header  |
-| footerTemplate   | html code of the template for the footer  |
+| POST Field       | Content                                  |
+|------------------|------------------------------------------|
+| html             | The HTML content to be rendered          |
+| format           | e.g. 'A4'                                |
+| landscape        | '0' or '1'                               |
+| headerTemplate   | html code of the template for the header |
+| footerTemplate   | html code of the template for the footer |
 
 see https://pptr.dev/api/puppeteer.pdfoptions for details.
 
