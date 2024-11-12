@@ -3,19 +3,21 @@
 - Author: Fred Neumann
 - Status: experimental
 
-This is a simple node.js script to create a PDF from HTML using [Puppeteer](https://pptr.dev/).
+This is a simple node.js server to create a PDF from HTML using [Puppeteer](https://pptr.dev/).
 
-## Installation
+## Direct Installation on a Server
 
-First install puppeteer:
+Create a user account that should be used for running the server:
+````
+groupadd -r tarc-pdf
+useradd -rm -g tarc-pdf -G audio,video tarc-pdf
+````
+
+Log in as that user and clone this repository. Go to the cloned directory and install puppeteer:
 
 ````
 npm install puppeteer
 ````
-
-Then clone this repository to the directory in which you installed puppeteer.
-
-## Start
 
 To run the service go the cloned directory an execute:
 ````
@@ -24,10 +26,25 @@ node service.js
 
 It should show you this message:
 ````
-Server running on port 3000
+Server running on port 8080
 ````
 
 You should put this service behind a reverse proxy to call it with https from outside.
+
+## Installation as a Docker Container
+
+Log in a a user that is able to build and run docker images.  Clone this repository.
+Go to the cloned repository and build the container:
+
+````
+docker build -t tarc-pdf .
+````
+
+Run the container:
+
+````
+docker run -p 8080:8080 tarc-pdf
+````
 
 ## Usage
 
@@ -50,4 +67,5 @@ The implementation adapts examples from:
 
 - https://apitemplate.io/blog/tips-for-generating-pdfs-with-puppeteer/
 - https://stackoverflow.com/questions/4295782/how-to-process-post-data-in-node-js
+- https://blog.apify.com/puppeteer-docker/
 

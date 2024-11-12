@@ -22,7 +22,7 @@ RUN which google-chrome-stable || true
 USER tarc-pdf
 
 # Set the working directory
-WORKDIR /home/apify
+WORKDIR /home/tarc-pdf
 
 # Copy package.json and package-lock.json
 COPY --chown=apify:apify package*.json ./
@@ -36,6 +36,9 @@ COPY --chown=tarc-pdf:tarc-pdf . .
 # Update the PUPPETEER_EXECUTABLE_PATH to the correct Chrome path (placeholder, update based on the output of `which google-chrome-stable`)
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
+
+# This is the port on which service.js listens
+EXPOSE 8080
 
 # Set the command to run your Puppeteer script
 CMD ["node", "service.js"]
