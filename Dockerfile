@@ -12,11 +12,7 @@ RUN apt-get update
 RUN apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-khmeros fonts-kacst fonts-freefont-ttf libxss1 dbus dbus-x11 --no-install-recommends
 RUN rm -rf /var/lib/apt/lists/*
 
-RUN groupadd -r tarc-pdf
-RUN useradd -rm -g tarc-pdf -G audio,video tarc-pdf
-
-# Determine the path of the installed Google Chrome
-RUN which google-chrome-stable || true
+RUN useradd -rm -G audio,video tarc-pdf
 
 # Switch to the non-root user
 USER tarc-pdf
@@ -25,7 +21,7 @@ USER tarc-pdf
 WORKDIR /home/tarc-pdf
 
 # Copy package.json and package-lock.json
-COPY --chown=apify:apify package*.json ./
+COPY --chown=tarc-pdf:tarc-pdf package*.json ./
 
 # Install Puppeteer without downloading bundled Chromium
 RUN npm install puppeteer --no-save
@@ -33,12 +29,12 @@ RUN npm install puppeteer --no-save
 # Copy your Puppeteer script into the Docker image
 COPY --chown=tarc-pdf:tarc-pdf . .
 
-# Update the PUPPETEER_EXECUTABLE_PATH to the correct Chrome path (placeholder, update based on the output of `which google-chrome-stable`)
+# Update the PUPPETEER_EXECUTABLE_PATH to the correct chrome path (placeholder, update based on the output of `which google-chrome-stable`)
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
 # This is the port on which service.js listens
 EXPOSE 8080
 
-# Set the command to run your Puppeteer script
+# Set the command to run your puppeteer script
 CMD ["node", "service.js"]
