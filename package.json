@@ -1,9 +1,9 @@
 {
   "name": "tarc-pdf",
-  "version": "0.0.9",
+  "version": "1.0.0",
   "description": "Server for PDF creation via puppeteer",
   "main": "service.js",
   "author": "Fred Neumann",
   "license": "MIT",
-  "homepage": "https://github.com/fneumann/tarc-pdf#readme"
+  "homepage": "https://github.com/DatabayAG/tarc-pdf"
 }
