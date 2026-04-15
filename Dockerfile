@@ -1,4 +1,4 @@
-FROM node:20.11.1
+FROM node:lts
 
 # See https://blog.apify.com/puppeteer-docker/
 # Split commands to profit of caching steps
@@ -24,9 +24,9 @@ WORKDIR /home/tarc-pdf
 COPY --chown=tarc-pdf:tarc-pdf package*.json ./
 
 # Install Puppeteer without downloading bundled Chromium
-RUN npm install puppeteer --no-save
+RUN npm clean-install --ignore-scripts
 
-# Copy your Puppeteer script into the Docker image
+# Copy the service script into the docker image
 COPY --chown=tarc-pdf:tarc-pdf . .
 
 # Update the PUPPETEER_EXECUTABLE_PATH to the correct chrome path (placeholder, update based on the output of `which google-chrome-stable`)
