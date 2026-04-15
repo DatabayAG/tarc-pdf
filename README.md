@@ -13,7 +13,7 @@ useradd -rm -G audio,video tarc-pdf
 Log in as that user and clone this repository. Go to the cloned directory and install puppeteer:
 
 ````
-npm install puppeteer
+npm clean-install --ignore-scripts
 ````
 
 To run the service go to the cloned directory an execute:
