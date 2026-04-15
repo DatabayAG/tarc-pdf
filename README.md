@@ -10,10 +10,19 @@ Create a user account that should be used for running the server:
 useradd -rm -G audio,video tarc-pdf
 ````
 
-Log in as that user and clone this repository. Go to the cloned directory and install puppeteer:
+Log in as that user and clone this repository. Go to the cloned directory and install puppeteer without executing scripts:
 
 ````
 npm clean-install --ignore-scripts
+npm audit
+````
+
+The last command should show 'found 0 vulnerabilities'. You may also use a tool like Snyk to check for vulnerabilities. 
+
+If everything looks fine, call the installation script to download chrome:
+
+````
+node node_modules/puppeteer/install.mjs
 ````
 
 To run the service go to the cloned directory an execute:
