@@ -29,6 +29,10 @@ RUN npm clean-install --ignore-scripts
 # Copy the service script into the docker image
 COPY --chown=tarc-pdf:tarc-pdf . .
 
+# Debug output of the path of the installed Google Chrome
+# Use `docker build --progress=plain` to see the output
+RUN which google-chrome-stable || true
+
 # Update the PUPPETEER_EXECUTABLE_PATH to the correct chrome path (placeholder, update based on the output of `which google-chrome-stable`)
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
