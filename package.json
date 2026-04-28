@@ -7,6 +7,6 @@
   "license": "MIT",
   "homepage": "https://github.com/DatabayAG/tarc-pdf",
   "dependencies": {
-    "puppeteer": "^24.40.0"
+    "puppeteer": "^24.42.0"
   }
 }
